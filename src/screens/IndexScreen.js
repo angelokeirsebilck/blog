@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { Feather } from '@expo/vector-icons';
 
 import { Context as BlogContext } from '../context/BlogContext';
 
-const IndexScreen = () => {
-  const { state, addBlogPost } = useContext(BlogContext);
+const IndexScreen = ({ navigation }) => {
+  const { state, addBlogPost, deleteBlogPost } = useContext(BlogContext);
 
   return (
     <View>
@@ -18,16 +18,26 @@ const IndexScreen = () => {
         keyExtractor={(post) => post.title}
         renderItem={({ item }) => {
           return (
-            <View style={styles.row}>
-              <Text style={styles.title}> {item.title} </Text>
-              <Feather style={styles.icon} name='trash' />
-            </View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Show', {
+                  id: item.id,
+                })
+              }>
+              <View style={styles.row}>
+                <Text style={styles.title}> {item.title} </Text>
+                <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
+                  <Feather style={styles.icon} name='trash' />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           );
         }}
       />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
